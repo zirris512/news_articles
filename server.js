@@ -1,12 +1,12 @@
-var express = require("express");
-var mongoose = require("mongoose");
-var exphbs = require("express-handlebars");
+const express = require("express");
+const mongoose = require("mongoose");
+const exphbs = require("express-handlebars");
 
-var PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-var app = express();
+const app = express();
 
-var routes = require("./routes");
+const routes = require("./routes");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -18,7 +18,7 @@ app.set("view engine", "handlebars");
 
 app.use(routes);
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/pcArticles";
 
 mongoose.connect(MONGODB_URI);
 

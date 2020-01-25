@@ -18,6 +18,10 @@ const articleSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    articleID: {
+        type: Schema.Types.ObjectId,
+        ref: "Comments"
     }
 });
 
