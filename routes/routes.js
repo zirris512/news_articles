@@ -9,12 +9,12 @@ allRoutes.get("/scrape", (_req, res) => {
     axios.get("https://www.pcgamer.com/news/").then(response => {
         const $ = cheerio.load(response.data);
 
-        $("div .listingResults").each((_i, element) => {
+        $("div .listingResult", "#content").each((_i, element) => {
             let result = {};
 
-            result.title = $(element).children("h3").text();
-            result.summary = $(element).children("p .synopsis").text();
-            result.url = $(element).children("a .article-link").attr("href");
+            result.title = $(".article-name", element).text();
+            result.summary = $(".synopsis", element).text().replace('News\n', '').replace('news\n', '');
+            result.url = $(".article-link", element).attr("href");
 
             db.Articles.create(result).then(dbArticle => {
                 console.log(dbArticle);
@@ -23,13 +23,14 @@ allRoutes.get("/scrape", (_req, res) => {
             });
         });
 
-        res.send("Scrape Successful!");
+        res.send("Scrape Complete!");
     });
 });
 
 allRoutes.get("/", (_req, res) => {
     db.Articles.find({}).then(dbArticle => {
-        res.render("index", {Articles: dbArticle});
+        console.log(dbArticle);
+        res.render("index", {articles: dbArticle});
     }).catch(err => {
         res.json(err);
     });
@@ -45,7 +46,7 @@ allRoutes.get("/articles/:id", (req, res) => {
 
 allRoutes.post("/articles/:id", (req, res) => {
     db.Comments.create(req.body).then(dbComments => {
-        return db.Articles.findOneAndUpdate({_id: req.params.id}, {ArticleID: dbComments._id}, {new: true});
+        res.json(dbComments);
     }).then(dbArticle => {
         res.json(dbArticle);
     }).catch(err => {

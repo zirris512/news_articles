@@ -7,6 +7,10 @@ const commentSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    articles: {
+        type: Schema.Types.ObjectId,
+        ref: "Articles"
     }
 });
 
