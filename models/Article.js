@@ -7,10 +7,6 @@ const articleSchema = new Schema({
         type: String,
         required: true
     },
-    summary: {
-        type: String,
-        required: true
-    },
     url: {
         type: String,
         required: true
@@ -18,7 +14,11 @@ const articleSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: "Comments"
+    }]
 });
 
 const Articles = mongoose.model("Articles", articleSchema);

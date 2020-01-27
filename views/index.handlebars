@@ -1,15 +1,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h1>PC Gamer Articles</h1>
+            <h1>News Articles</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8">
             {{#each articles}}
             <a href={{this.url}}><h2>{{this.title}}</h2></a>
-            <p>{{this.summary}}</p>
-            <button data-id={{this._id}} class="btn btn-success commentBtn">Comment</button><br>
+            <button data-id={{this.id}} class="btn btn-success commentBtn">Comment</button><br>
             {{/each}}
         </div>
         <div class="col-md-4">

@@ -6,15 +6,14 @@ const axios = require("axios");
 const allRoutes = Router();
 
 allRoutes.get("/scrape", (_req, res) => {
-    axios.get("https://www.pcgamer.com/news/").then(response => {
+    axios.get("https://www.reddit.com/r/news/").then(response => {
         const $ = cheerio.load(response.data);
 
-        $("div .listingResult", "#content").each((_i, element) => {
+        $(".Post").each((_i, element) => {
             let result = {};
 
-            result.title = $(".article-name", element).text();
-            result.summary = $(".synopsis", element).text().replace('News\n', '').replace('news\n', '');
-            result.url = $(".article-link", element).attr("href");
+            result.title = $(".SQnoC3ObvgnGjWt90zD9Z", element).text();
+            result.url = $("._13svhQIUZqD9PVzFcLwOKT", element).attr("href");
 
             db.Articles.create(result).then(dbArticle => {
                 console.log(dbArticle);
@@ -29,8 +28,13 @@ allRoutes.get("/scrape", (_req, res) => {
 
 allRoutes.get("/", (_req, res) => {
     db.Articles.find({}).then(dbArticle => {
-        console.log(dbArticle);
-        res.render("index", {articles: dbArticle});
+        let articleList = [];
+
+        for(let i = 0; i < dbArticle.length; i++) {
+            articleList[i] = {id: dbArticle[i]._id, title: dbArticle[i].title, url: dbArticle[i].url};
+        };
+
+        res.render("index", {articles: articleList});
     }).catch(err => {
         res.json(err);
     });
@@ -46,7 +50,7 @@ allRoutes.get("/articles/:id", (req, res) => {
 
 allRoutes.post("/articles/:id", (req, res) => {
     db.Comments.create(req.body).then(dbComments => {
-        res.json(dbComments);
+        return db.Articles.findOneAndUpdate({_id: req.params.id}, {$push: {comments: dbComments._id}}, {new: true});
     }).then(dbArticle => {
         res.json(dbArticle);
     }).catch(err => {
